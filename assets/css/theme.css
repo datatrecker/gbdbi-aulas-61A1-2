@@ -1,0 +1,26 @@
+/* ============================================================
+   theme.css — modo claro (alternativo)
+   ============================================================ */
+
+[data-theme="light"] {
+  --bg: #F7F7F5;
+  --surface: #FFFFFF;
+  --surface-2: #F0F0EE;
+  --border: #E0E0E0;
+  --text-primary: #111111;
+  --text-secondary: #555555;
+  --accent: #1A6FD4;
+  --accent-hover: #0F4E9B;
+  --accent-muted: #D6E8FF;
+  --ok: #15803D;
+  --warn: #B45309;
+  --danger: #B91C1C;
+  --shadow: 0 1px 2px rgba(0,0,0,.06);
+  --diagram-bg: #FBF7F3;
+}
+
+/* Ícone do toggle: mostra o destino, não o estado atual */
+.theme-toggle .icon-sun { display: none; }
+.theme-toggle .icon-moon { display: block; }
+[data-theme="light"] .theme-toggle .icon-sun { display: block; }
+[data-theme="light"] .theme-toggle .icon-moon { display: none; }

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chinook Analytics Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bg:#0f1117;--surface:#1a1d27;--surface2:#22263a;--border:rgba(255,255,255,0.07);
+    --accent1:#6c63ff;--accent2:#00d4aa;--accent3:#ff6b6b;--accent4:#ffa726;
+    --text:#e8eaf6;--muted:#8b8fa8;--good:#00d4aa;--warn:#ffa726;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;}
+  .nav{display:flex;align-items:center;background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;position:sticky;top:0;z-index:100;overflow-x:auto;}
+  .nav-logo{font-size:15px;font-weight:700;letter-spacing:1.5px;color:var(--accent1);padding:18px 24px 18px 0;border-right:1px solid var(--border);margin-right:8px;white-space:nowrap;}
+  .nav-logo span{color:var(--accent2);}
+  .nav-tab{padding:20px 18px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;}
+  .nav-tab:hover{color:var(--text);}
+  .nav-tab.active{color:var(--text);border-bottom-color:var(--accent1);}
+  .page{display:none;padding:28px 28px 48px;}
+  .page.active{display:block;}
+  .page-header{margin-bottom:20px;}
+  .page-header h1{font-size:20px;font-weight:600;margin-bottom:4px;}
+  .page-header p{font-size:13px;color:var(--muted);line-height:1.6;}
+  .page-header p strong{color:var(--accent2);}
+  .notice{background:rgba(255,167,38,.08);border:1px solid rgba(255,167,38,.25);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--warn);margin-bottom:18px;}
+  .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:22px;}
+  .metric{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
+  .metric-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;}
+  .metric-value{font-size:24px;font-weight:700;}
+  .metric-value.good{color:var(--good);}
+  .metric-value.warn{color:var(--warn);}
+  .metric-sub{font-size:11px;color:var(--muted);margin-top:3px;}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
+  .grid-full{margin-bottom:18px;}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;}
+  .panel-title{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px;}
+  .chart-wrap{position:relative;width:100%;}
+  .questions{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
+  .q-pill{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:5px 13px;font-size:12px;color:var(--muted);}
+  .q-pill strong{color:var(--accent2);}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:10px;font-size:12px;color:var(--muted);}
+  .legend-item{display:flex;align-items:center;gap:6px;}
+  .legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+  .rank-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .rank-table th{text-align:left;padding:7px 10px;color:var(--muted);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--border);}
+  .rank-table td{padding:9px 10px;border-bottom:1px solid var(--border);}
+  .rank-table tr:last-child td{border-bottom:none;}
+  .rank-table .num{text-align:right;font-variant-numeric:tabular-nums;}
+  .badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;}
+  .b1{background:rgba(108,99,255,.25);color:var(--accent1);}
+  .b2{background:rgba(0,212,170,.25);color:var(--good);}
+  .b3{background:rgba(255,167,38,.25);color:var(--warn);}
+  @media(max-width:820px){.grid-2{grid-template-columns:1fr;}.metrics{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">CHINOOK<span>ANALYTICS</span></div>
+  <div class="nav-tab active" onclick="showPage('employees',this)">Desempenho de Colaboradores</div>
+  <div class="nav-tab" onclick="showPage('artists',this)">Desempenho de Artistas</div>
+  <div class="nav-tab" onclick="showPage('company',this)">Visão Geral da Empresa</div>
+</nav>
+
+<!-- DASHBOARD 1 -->
+<div id="page-employees" class="page active">
+  <div class="page-header">
+    <h1>Desempenho de Colaboradores em Vendas</h1>
+    <p>Período: <strong>Janeiro/2021 – Março/2023</strong> · Fonte: fact_sales ⋈ dim_employee ⋈ dim_date</p>
+  </div>
+  <div class="notice">⚠ Nota analítica: 18 dos 59 clientes estão vinculados aos 3 Sales Support Agents. Os demais clientes possuem support_rep_id apontando para gestores (não agentes de venda), o que é esperado na estrutura da Chinook.</div>
+  <div class="questions">
+    <div class="q-pill"><strong>Q1</strong> Qual colaborador gerou mais receita total?</div>
+    <div class="q-pill"><strong>Q2</strong> Como evoluiu a receita mês a mês?</div>
+    <div class="q-pill"><strong>Q3</strong> Qual o share (%) por ano de cada colaborador?</div>
+    <div class="q-pill"><strong>Q4</strong> Qual o ticket médio por item vendido?</div>
+    <div class="q-pill"><strong>Q5</strong> Quem atende mais clientes distintos?</div>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="metric-label">Receita Total (3 Agentes)</div><div class="metric-value good">$2.283</div><div class="metric-sub">98% da receita total da empresa</div></div>
+    <div class="metric"><div class="metric-label">Colaborador Líder</div><div class="metric-value">J. Peacock</div><div class="metric-sub">$787 · 34,5% do segmento</div></div>
+    <div class="metric"><div class="metric-label">Ticket Médio / Fatura</div><div class="metric-value warn">$5,57</div><div class="metric-sub">média por invoice</div></div>
+    <div class="metric"><div class="metric-label">Clientes Únicos</div><div class="metric-value">58</div><div class="metric-sub">total nos 3 agentes</div></div>
+  </div>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">Receita Total por Colaborador — 2021–2023 ($)</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="c1_total" role="img" aria-label="Receita total por colaborador">Peacock $361, Johnson $340, Park $309</canvas></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Share de Receita por Ano (%)</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#6c63ff"></div>Peacock</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#00d4aa"></div>Park</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#ffa726"></div>Johnson</div>
+      </div>
+      <div class="chart-wrap" style="height:220px"><canvas id="c1_share" role="img" aria-label="Share de receita por ano">Barras empilhadas 2021 a 2023</canvas></div>
+    </div>
+  </div>
+  <div class="grid-full panel">
+    <div class="panel-title">Evolução Mensal de Receita por Colaborador ($)</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#6c63ff"></div>Jane Peacock</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#00d4aa"></div>Margaret Park</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ffa726"></div>Steve Johnson</div>
+    </div>
+    <div class="chart-wrap" style="height:220px"><canvas id="c1_trend" role="img" aria-label="Evolução mensal por colaborador">Linhas mensais jan/2021 a mar/2023</canvas></div>
+  </div>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">Ranking Consolidado</div>
+      <table class="rank-table">
+        <thead><tr><th>Colaborador</th><th class="num">Receita</th><th class="num">Clientes</th><th class="num">Itens</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge b1">1º</span> Jane Peacock</td><td class="num">$787</td><td class="num">20</td><td class="num">139</td></tr>
+          <tr><td><span class="badge b2">2º</span> Margaret Park</td><td class="num">$775</td><td class="num">20</td><td class="num">140</td></tr>
+          <tr><td><span class="badge b3">3º</span> Steve Johnson</td><td class="num">$720</td><td class="num">18</td><td class="num">126</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Receita Trimestral por Colaborador ($)</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#6c63ff"></div>Peacock</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#00d4aa"></div>Park</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#ffa726"></div>Johnson</div>
+      </div>
+      <div class="chart-wrap" style="height:200px"><canvas id="c1_qtd" role="img" aria-label="Receita trimestral agrupada por colaborador">Barras agrupadas por trimestre</canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD 2 -->
+<div id="page-artists" class="page">
+  <div class="page-header">
+    <h1>Desempenho de Artistas</h1>
+    <p>Período: <strong>Janeiro/2021 – Setembro/2025</strong> · Fonte: fact_sales ⋈ dim_artist ⋈ dim_track ⋈ dim_date</p>
+  </div>
+  <div class="notice">⚠ Nota analítica: ~69% da receita total está associada a faixas cujo álbum não possui artista identificável na base (faixas avulsas, compilações e trilhas sonoras). Os dados abaixo refletem os artistas rastreáveis.</div>
+  <div class="questions">
+    <div class="q-pill"><strong>Q1</strong> Quais artistas geraram mais receita total?</div>
+    <div class="q-pill"><strong>Q2</strong> Quais venderam mais faixas?</div>
+    <div class="q-pill"><strong>Q3</strong> Como evoluiu a receita dos top artistas por ano?</div>
+    <div class="q-pill"><strong>Q4</strong> Qual gênero concentra mais receita?</div>
+    <div class="q-pill"><strong>Q5</strong> Qual a receita por tipo de mídia?</div>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="metric-label">Receita Rastreável</div><div class="metric-value good">$311</div><div class="metric-sub">artistas identificados</div></div>
+    <div class="metric"><div class="metric-label">Top Artista</div><div class="metric-value">Faith No More</div><div class="metric-sub">$24,75 · 25 faixas</div></div>
+    <div class="metric"><div class="metric-label">Gênero Líder</div><div class="metric-value">Rock</div><div class="metric-sub">34,1% da receita rastreável</div></div>
+    <div class="metric"><div class="metric-label">Artistas com Vendas</div><div class="metric-value warn">67</div><div class="metric-sub">do catálogo rastreável</div></div>
+  </div>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">Top 10 Artistas — Receita Total ($)</div>
+      <div class="chart-wrap" style="height:330px"><canvas id="c2_rev" role="img" aria-label="Top 10 artistas por receita">Faith No More lidera com $24,75</canvas></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Top 10 Artistas — Faixas Vendidas</div>
+      <div class="chart-wrap" style="height:330px"><canvas id="c2_trk" role="img" aria-label="Top 10 artistas por faixas vendidas">Contagem de itens por artista</canvas></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">Receita por Gênero — excl. não rastreáveis (%)</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#6c63ff"></div>Rock 34%</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#00d4aa"></div>Latin 30%</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#ffa726"></div>Alt/Punk 14%</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#ff6b6b"></div>Jazz 7%</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#29b6f6"></div>Outros 15%</div>
+      </div>
+      <div class="chart-wrap" style="height:240px"><canvas id="c2_genre" role="img" aria-label="Receita por gênero musical">Donut com proporção por gênero</canvas></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Evolução Anual — Top 5 Artistas (Receita $)</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#6c63ff"></div>Faith No More</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#00d4aa"></div>CCR</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#ffa726"></div>Chico Buarque</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#ff6b6b"></div>Deep Purple</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#29b6f6"></div>Chico Science</div>
+      </div>
+      <div class="chart-wrap" style="height:240px"><canvas id="c2_trend" role="img" aria-label="Evolução anual top 5 artistas">Linhas por artista 2021 a 2025</canvas></div>
+    </div>
+  </div>
+  <div class="grid-full panel">
+    <div class="panel-title">Receita por Tipo de Mídia ($)</div>
+    <div class="chart-wrap" style="height:140px"><canvas id="c2_media" role="img" aria-label="Receita por tipo de mídia">MPEG audio file domina com $307,89</canvas></div>
+  </div>
+</div>
+
+<!-- DASHBOARD 3 -->
+<div id="page-company" class="page">
+  <div class="page-header">
+    <h1>Visão Geral — Desempenho Comercial</h1>
+    <p>Período: <strong>Janeiro/2021 – Setembro/2025</strong> · Fonte: fact_sales ⋈ dim_date ⋈ dim_customer</p>
+  </div>
+  <div class="questions">
+    <div class="q-pill"><strong>Q1</strong> Qual é a receita total e a tendência anual?</div>
+    <div class="q-pill"><strong>Q2</strong> Qual país concentra mais receita?</div>
+    <div class="q-pill"><strong>Q3</strong> Como se distribui a receita mensal por ano?</div>
+    <div class="q-pill"><strong>Q4</strong> Qual a sazonalidade de vendas por mês?</div>
+    <div class="q-pill"><strong>Q5</strong> Qual o crescimento YoY?</div>
+  </div>
+  <div class="metrics">
+    <div class="metric"><div class="metric-label">Receita Total (Período)</div><div class="metric-value good">$2.329</div><div class="metric-sub">2021 a set/2025</div></div>
+    <div class="metric"><div class="metric-label">Melhor Ano</div><div class="metric-value">2022</div><div class="metric-sub">$481 · +7,1% vs 2021</div></div>
+    <div class="metric"><div class="metric-label">Clientes Únicos</div><div class="metric-value">59</div><div class="metric-sub">base ativa no período</div></div>
+    <div class="metric"><div class="metric-label">País Líder</div><div class="metric-value">EUA</div><div class="metric-sub">$523 · 22,5% da receita</div></div>
+    <div class="metric"><div class="metric-label">Ticket Médio/Fatura</div><div class="metric-value warn">$5,65</div><div class="metric-sub">por invoice total</div></div>
+  </div>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">Receita Anual e Crescimento YoY</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#6c63ff"></div>Receita ($)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#00d4aa;height:3px;border-radius:2px;width:18px"></div>YoY (%)</div>
+      </div>
+      <div class="chart-wrap" style="height:230px"><canvas id="c3_yoy" role="img" aria-label="Receita anual e crescimento YoY">Combo bar+line 2021–2025</canvas></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Sazonalidade — Receita Média por Mês ($)</div>
+      <div class="chart-wrap" style="height:230px"><canvas id="c3_season" role="img" aria-label="Média de receita por mês">Barras mensais jan a dez</canvas></div>
+    </div>
+  </div>
+  <div class="grid-full panel">
+    <div class="panel-title">Receita Mensal por Ano — Visão de Tendência ($)</div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#6c63ff"></div>2021</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#00d4aa"></div>2022</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ffa726"></div>2023</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ff6b6b"></div>2024</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#29b6f6"></div>2025</div>
+    </div>
+    <div class="chart-wrap" style="height:200px"><canvas id="c3_monthly" role="img" aria-label="Receita mensal por ano">Linhas sobrepostas por ano</canvas></div>
+  </div>
+  <div class="grid-2">
+    <div class="panel">
+      <div class="panel-title">Top 10 Países por Receita ($)</div>
+      <div class="chart-wrap" style="height:320px"><canvas id="c3_country" role="img" aria-label="Receita por país">Barras horizontais top 10 países</canvas></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Receita por Tipo de Mídia — Composição</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#6c63ff"></div>MPEG audio</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#00d4aa"></div>Não rastreável</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#ffa726"></div>Protected AAC</div>
+      </div>
+      <div class="chart-wrap" style="height:280px"><canvas id="c3_media" role="img" aria-label="Composição por tipo de mídia">Donut com proporções</canvas></div>
+    </div>
+  </div>
+</div>
+
+<script>
+Chart.defaults.color='#8b8fa8';
+Chart.defaults.borderColor='rgba(255,255,255,0.05)';
+Chart.defaults.font.family="'Segoe UI',system-ui,sans-serif";
+Chart.defaults.font.size=12;
+
+/* ============================================================
+   DADOS REAIS EXTRAÍDOS DO ARQUIVO SQL CHINOOK
+============================================================ */
+
+// --- D1: EMPLOYEES ---
+const empNames = ['Jane Peacock','Margaret Park','Steve Johnson'];
+const empTotals = [787.42, 775.40, 720.16];
+
+// Monthly ts Jan/2021–Sep/2025 (57 meses)
+const monthsTs = ['Jan/21','Fev/21','Mar/21','Abr/21','Mai/21','Jun/21','Jul/21','Ago/21','Set/21','Out/21','Nov/21','Dez/21',
+                  'Jan/22','Fev/22','Mar/22','Abr/22','Mai/22','Jun/22','Jul/22','Ago/22','Set/22','Out/22','Nov/22','Dez/22',
+                  'Jan/23','Fev/23','Mar/23','Abr/23','Mai/23','Jun/23','Jul/23','Ago/23','Set/23','Out/23','Nov/23','Dez/23',
+                  'Jan/24','Fev/24','Mar/24','Abr/24','Mai/24','Jun/24','Jul/24','Ago/24','Set/24','Out/24','Nov/24','Dez/24',
+                  'Jan/25','Fev/25','Mar/25','Abr/25','Mai/25','Jun/25','Jul/25','Ago/25','Set/25'];
+const empMonthly = {
+  peacock: [0.99,14.85,1.98,18.81,10.89,1.98,22.77,30.69,0,0,3.96,9.9,3.96,31.77,34.72,26.73,1.98,5.94,21.78,17.82,7.92,11.88,30.69,26.73,1.98,13.86,17.82,14.91,0.99,11.94,25.74,10.89,21.78,28.71,2.97,0,9.9,3.96,10.89,5.94,31.68,10.89,1.98,5.94,9.95,24.78,7.92,22.77,19.8,15.84,5.94,0,7.92,34.65,4.95,9.9,10.89],
+  park:    [23.76,2.97,13.86,16.83,1.98,10.89,3.96,6.93,28.71,7.92,31.68,11.88,0,5.94,9.9,1.98,21.78,22.77,15.84,7.92,17.82,9.9,2.97,5.94,8.91,15.84,13.86,6.93,16.83,20.83,9.9,0.99,4.95,5.94,10.89,9.9,16.83,24.75,18.81,1.98,3.96,22.77,1.98,39.7,24.82,10.91,24.75,5.94,15.84,11.88,13.86,33.66,8.91,0,18.81,13.86,10.89],
+  johnson: [10.89,13.86,21.78,1.98,24.75,24.75,10.89,0,7.92,29.7,1.98,15.84,48.66,8.91,0,8.91,13.86,8.91,0,11.88,10.89,15.84,3.96,4.95,26.73,7.92,3.96,7.92,24.8,17.85,1.98,25.74,10.89,2.97,9.9,18.81,10.89,8.91,7.92,29.7,1.98,3.96,35.66,1.98,11.94,6.93,4.95,8.91,1.98,0,17.82,0,20.79,2.97,13.86,11.88,15.84]
+};
+
+// Quarterly Q1/21–Q3/25
+const qtLabels = ['Q1/21','Q2/21','Q3/21','Q4/21','Q1/22','Q2/22','Q3/22','Q4/22','Q1/23','Q2/23','Q3/23','Q4/23','Q1/24','Q2/24','Q3/24','Q4/24','Q1/25','Q2/25','Q3/25'];
+const empQtd = {
+  peacock: [17.82,31.68,53.46,13.86,70.45,34.65,47.52,69.3,33.66,27.84,58.41,31.68,24.75,48.51,17.87,55.47,41.58,42.57,25.74],
+  park:    [40.59,29.7,39.6,51.48,15.84,46.53,41.58,18.81,38.61,44.59,15.84,26.73,60.39,28.71,66.5,41.6,41.58,42.57,43.56],
+  johnson: [46.53,51.48,18.81,47.52,57.57,31.68,22.77,24.75,38.61,50.57,38.61,31.68,27.72,35.64,49.58,20.79,19.8,23.76,41.58]
+};
+
+// Share by year
+const shareYears = ['2021','2022','2023','2024','2025'];
+const sharePeacock = [26.4,46.1,34.7,30.7,33.8];
+const sharePark    = [36.5,25.5,28.8,41.3,37.9];
+const shareJohnson = [37.1,28.4,36.5,28.0,28.3];
+
+// --- D2: ARTISTS ---
+const top10names = ['Faith No More','Creedence C.R.','Chico Buarque','Deep Purple','Chico Science & NZ','Various Artists','Cássia Eller','Eric Clapton','Caetano Veloso','Kiss'];
+const top10rev  = [24.75,20.79,16.83,16.83,13.86,13.86,11.88,11.88,10.89,10.89];
+const top10qty  = [25,21,17,17,14,14,12,12,11,11];
+
+const genreLabels = ['Rock','Latin','Alt/Punk','Jazz','Metal','Blues','Reggae','Pop'];
+const genrePcts   = [34.1,30.3,13.7,7.3,4.1,4.1,2.9,1.0];
+
+// Top5 by year (2021–2025)
+const yearLabels = ['2021','2022','2023','2024','2025'];
+const artistTrend = {
+  faithNoMore: [14.85,9.9,0,0,0],
+  ccr:         [9.9,10.89,0,0,0],
+  chico:       [9.9,6.93,0,0,0],
+  deepPurple:  [8.91,7.92,0,0,0],
+  chicoSci:    [7.92,5.94,0,0,0]
+};
+
+// --- D3: COMPANY ---
+const annualRev  = [449.46,481.45,469.58,477.53,450.58];
+const yoyGrowth  = [null,7.1,-2.5,1.7,-5.6];
+
+const monthLabels = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const seasonAvg   = [5.92,5.67,5.57,6.00,5.52,5.75,5.43,5.66,5.95,5.52,5.48,5.40];
+
+const monthlyByYear = {
+  y2021:[35.64,37.62,37.62,37.62,37.62,37.62,37.62,37.62,37.62,37.62,37.62,37.62],
+  y2022:[52.62,46.62,44.62,37.62,37.62,37.62,37.62,37.62,36.63,37.62,37.62,37.62],
+  y2023:[37.62,37.62,37.62,51.62,42.62,50.62,37.62,37.62,37.62,37.62,23.76,37.62],
+  y2024:[37.62,37.62,37.62,37.62,37.62,37.62,39.62,47.62,46.71,42.62,37.62,37.62],
+  y2025:[37.62,27.72,37.62,33.66,37.62,37.62,37.62,37.62,37.62,0,0,0]
+};
+
+const countries   = ['USA','Canada','France','Brazil','Germany','United Kingdom','Czech Republic','Portugal','India','Chile'];
+const countryRevs = [523.06,303.96,195.10,190.10,156.48,112.86,90.24,77.24,75.26,46.62];
+
+/* ============================================================
+   BUILD CHARTS
+============================================================ */
+function buildD1(){
+  // Bar total
+  new Chart(document.getElementById('c1_total'),{
+    type:'bar',
+    data:{labels:empNames,datasets:[{data:empTotals,backgroundColor:['#6c63ff','#ffa726','#00d4aa'],borderWidth:0,borderRadius:5}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' $'+ctx.parsed.y.toFixed(2)}}},
+      scales:{y:{ticks:{callback:v=>'$'+v},grid:{color:'rgba(255,255,255,0.04)'}},x:{grid:{display:false}}}}
+  });
+
+  // Stacked share
+  new Chart(document.getElementById('c1_share'),{
+    type:'bar',
+    data:{labels:shareYears,datasets:[
+      {label:'Peacock',data:sharePeacock,backgroundColor:'#6c63ff',borderWidth:0},
+      {label:'Park',   data:sharePark,   backgroundColor:'#00d4aa',borderWidth:0},
+      {label:'Johnson',data:shareJohnson,backgroundColor:'#ffa726',borderWidth:0}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+ctx.parsed.y.toFixed(1)+'%'}}},
+      scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,max:100,ticks:{callback:v=>v+'%'},grid:{color:'rgba(255,255,255,0.04)'}}}}
+  });
+
+  // Monthly line
+  new Chart(document.getElementById('c1_trend'),{
+    type:'line',
+    data:{labels:monthsTs,datasets:[
+      {label:'Peacock',data:empMonthly.peacock,borderColor:'#6c63ff',borderWidth:2,pointRadius:2,tension:0.3,fill:false},
+      {label:'Johnson',data:empMonthly.johnson,borderColor:'#ffa726',borderWidth:2,pointRadius:2,tension:0.3,fill:false},
+      {label:'Park',   data:empMonthly.park,   borderColor:'#00d4aa',borderWidth:2,pointRadius:2,tension:0.3,fill:false}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{y:{ticks:{callback:v=>'$'+v},grid:{color:'rgba(255,255,255,0.04)'}},
+              x:{grid:{display:false},ticks:{autoSkip:true,maxTicksLimit:12}}}}
+  });
+
+  // Quarterly grouped
+  new Chart(document.getElementById('c1_qtd'),{
+    type:'bar',
+    data:{labels:qtLabels,datasets:[
+      {label:'Peacock',data:empQtd.peacock,backgroundColor:'#6c63ff',borderWidth:0,borderRadius:3},
+      {label:'Park',   data:empQtd.park,   backgroundColor:'#00d4aa',borderWidth:0,borderRadius:3},
+      {label:'Johnson',data:empQtd.johnson,backgroundColor:'#ffa726',borderWidth:0,borderRadius:3}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{y:{ticks:{callback:v=>'$'+v},grid:{color:'rgba(255,255,255,0.04)'}},x:{grid:{display:false}}}}
+  });
+}
+
+function buildD2(){
+  // Top10 revenue horizontal
+  new Chart(document.getElementById('c2_rev'),{
+    type:'bar',
+    data:{labels:top10names,datasets:[{data:top10rev,backgroundColor:'#6c63ff',borderWidth:0,borderRadius:3}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' $'+ctx.parsed.x.toFixed(2)}}},
+      scales:{x:{ticks:{callback:v=>'$'+v},grid:{color:'rgba(255,255,255,0.04)'}},y:{grid:{display:false},ticks:{font:{size:11}}}}}
+  });
+
+  // Top10 qty horizontal
+  new Chart(document.getElementById('c2_trk'),{
+    type:'bar',
+    data:{labels:top10names,datasets:[{data:top10qty,backgroundColor:'#00d4aa',borderWidth:0,borderRadius:3}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:'rgba(255,255,255,0.04)'}},y:{grid:{display:false},ticks:{font:{size:11}}}}}
+  });
+
+  // Genre donut
+  new Chart(document.getElementById('c2_genre'),{
+    type:'doughnut',
+    data:{labels:genreLabels,datasets:[{data:genrePcts,backgroundColor:['#6c63ff','#00d4aa','#ffa726','#ff6b6b','#29b6f6','#ce93d8','#80cbc4','#ffcc80'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.label+': '+ctx.parsed.toFixed(1)+'%'}}}}
+  });
+
+  // Top5 trend lines
+  new Chart(document.getElementById('c2_trend'),{
+    type:'line',
+    data:{labels:yearLabels,datasets:[
+      {label:'Faith No More',data:artistTrend.faithNoMore,borderColor:'#6c63ff',borderWidth:2,pointRadius:5,tension:0.3},
+      {label:'CCR',          data:artistTrend.ccr,        borderColor:'#00d4aa',borderWidth:2,pointRadius:5,tension:0.3},
+      {label:'Chico Buarque',data:artistTrend.chico,      borderColor:'#ffa726',borderWidth:2,pointRadius:5,tension:0.3},
+      {label:'Deep Purple',  data:artistTrend.deepPurple, borderColor:'#ff6b6b',borderWidth:2,pointRadius:5,tension:0.3},
+      {label:'Chico Sci',    data:artistTrend.chicoSci,   borderColor:'#29b6f6',borderWidth:2,pointRadius:5,tension:0.3}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{y:{ticks:{callback:v=>'$'+v},grid:{color:'rgba(255,255,255,0.04)'}},x:{grid:{display:false}}}}
+  });
+
+  // Media bar
+  new Chart(document.getElementById('c2_media'),{
+    type:'bar',
+    data:{labels:['MPEG audio file','Protected AAC audio file'],datasets:[{data:[307.89,2.97],backgroundColor:['#6c63ff','#ffa726'],borderWidth:0,borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' $'+ctx.parsed.y.toFixed(2)}}},
+      scales:{y:{ticks:{callback:v=>'$'+v},grid:{color:'rgba(255,255,255,0.04)'}},x:{grid:{display:false}}}}
+  });
+}
+
+function buildD3(){
+  // YoY combo
+  new Chart(document.getElementById('c3_yoy'),{
+    type:'bar',
+    data:{labels:yearLabels,datasets:[
+      {type:'bar', label:'Receita ($)',    data:annualRev, backgroundColor:'#6c63ff',borderWidth:0,borderRadius:4,yAxisID:'y'},
+      {type:'line',label:'YoY %',          data:yoyGrowth, borderColor:'#00d4aa',borderWidth:2,pointRadius:5,tension:0.3,yAxisID:'y2',spanGaps:true}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{y:{ticks:{callback:v=>'$'+v.toFixed(0)},grid:{color:'rgba(255,255,255,0.04)'},position:'left'},
+              y2:{ticks:{callback:v=>v!=null?v.toFixed(1)+'%':''},grid:{display:false},position:'right'},
+              x:{grid:{display:false}}}}
+  });
+
+  // Seasonality
+  new Chart(document.getElementById('c3_season'),{
+    type:'bar',
+    data:{labels:monthLabels,datasets:[{data:seasonAvg,backgroundColor:seasonAvg.map((_,i)=>i===3?'#ffa726':'#6c63ff'),borderWidth:0,borderRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' $'+ctx.parsed.y.toFixed(2)}}},
+      scales:{y:{min:5.0,ticks:{callback:v=>'$'+v.toFixed(2)},grid:{color:'rgba(255,255,255,0.04)'}},x:{grid:{display:false}}}}
+  });
+
+  // Monthly multi-year
+  new Chart(document.getElementById('c3_monthly'),{
+    type:'line',
+    data:{labels:monthLabels,datasets:[
+      {label:'2021',data:monthlyByYear.y2021,borderColor:'#6c63ff',borderWidth:2,pointRadius:3,tension:0.3},
+      {label:'2022',data:monthlyByYear.y2022,borderColor:'#00d4aa',borderWidth:2,pointRadius:3,tension:0.3},
+      {label:'2023',data:monthlyByYear.y2023,borderColor:'#ffa726',borderWidth:2,pointRadius:3,tension:0.3},
+      {label:'2024',data:monthlyByYear.y2024,borderColor:'#ff6b6b',borderWidth:2,pointRadius:3,tension:0.3},
+      {label:'2025',data:monthlyByYear.y2025,borderColor:'#29b6f6',borderWidth:2,pointRadius:3,tension:0.3,spanGaps:false}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{y:{ticks:{callback:v=>v>0?'$'+v.toFixed(0):''},grid:{color:'rgba(255,255,255,0.04)'}},x:{grid:{display:false}}}}
+  });
+
+  // Countries
+  new Chart(document.getElementById('c3_country'),{
+    type:'bar',
+    data:{labels:countries,datasets:[{data:countryRevs,backgroundColor:'#29b6f6',borderWidth:0,borderRadius:3}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' $'+ctx.parsed.x.toFixed(2)}}},
+      scales:{x:{ticks:{callback:v=>'$'+v},grid:{color:'rgba(255,255,255,0.04)'}},y:{grid:{display:false}}}}
+  });
+
+  // Media donut
+  new Chart(document.getElementById('c3_media'),{
+    type:'doughnut',
+    data:{labels:['MPEG audio file','Não rastreável','Protected AAC'],datasets:[{data:[307.89,710.14,2.97],backgroundColor:['#6c63ff','#00d4aa','#ffa726'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.label+': $'+ctx.parsed.toFixed(2)}}}}
+  });
+}
+
+function showPage(id,tab){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  tab.classList.add('active');
+}
+
+window.addEventListener('DOMContentLoaded',()=>{buildD1();buildD2();buildD3();});
+</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gestão de Banco de Dados e BI · ESPM</title>
+<meta name="description" content="Site da disciplina Gestão de Banco de Dados e BI — Pós-Graduação em Data Analytics e Marketing, ESPM. Plano de ensino, 8 aulas, atividades e recursos.">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0D0D0D">
+
+<!-- Defesa em profundidade contra XSS: só permite script dos arquivos locais mais os
+     dois scripts inline da página (autorizados por hash). Se o conteúdo de QUALQUER
+     script inline mudar, os hashes precisam ser recalculados, senão o navegador passa
+     a bloquear esse script (ver site/README.md, seção "Convenção de segurança"). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-X6n4Av90RwqaxA/XiYKrpkD6hD3it20NGkINfaaR/sA=' 'sha256-QSbHxbsW/dYu4OYOpXE8awyBiIBsB+7c51Ojr9dnHeI='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'">
+
+<!-- Tema aplicado antes da renderização: evita FOUC -->
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('gbdbi:tema');
+      if (t !== 'light' && t !== 'dark') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+      document.querySelector('meta[name="theme-color"]')
+        .setAttribute('content', t === 'light' ? '#F7F7F5' : '#0D0D0D');
+    } catch (e) {}
+  })();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/pages.css">
+<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%234A9EFF'/><text x='16' y='22' font-family='monospace' font-size='15' font-weight='700' fill='%23fff' text-anchor='middle'>BD</text></svg>">
+</head>
+
+<body>
+
+<a class="skip-link" href="#view">Ir para o conteúdo</a>
+
+<div class="layout">
+
+  <!-- ─────────── SIDEBAR ─────────── -->
+  <aside class="sidebar" id="sidebar" aria-label="Navegação da disciplina">
+    <div class="sidebar-header">
+      <a class="sidebar-brand" href="#/" aria-label="Início da disciplina">
+        <span class="sidebar-brand-abbr">BD</span>
+        <span class="sidebar-brand-name">GBD&amp;BI</span>
+      </a>
+      <button class="sidebar-close" id="sidebar-close" type="button" aria-label="Fechar menu">&#10005;</button>
+    </div>
+    <nav id="sidebar-nav" aria-label="Seções"></nav>
+  </aside>
+  <div class="sidebar-overlay" id="sidebar-overlay" hidden></div>
+
+  <!-- ─────────── CONTEÚDO ─────────── -->
+  <main class="main-content">
+    <div class="main-inner">
+
+      <header class="site-header">
+        <button class="header-hamburger" id="hamburger" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">&#9776;</button>
+        <nav class="header-breadcrumb" id="breadcrumb" aria-label="Trilha de navegação"></nav>
+        <div class="header-actions">
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Alternar tema claro/escuro" title="Alternar tema">
+            <span class="icon-moon" aria-hidden="true">&#9789;</span>
+            <span class="icon-sun" aria-hidden="true">&#9788;</span>
+          </button>
+        </div>
+      </header>
+
+      <div id="view" tabindex="-1">
+        <div class="loading">Carregando…</div>
+      </div>
+
+      <footer class="site-footer">
+        <div>
+          <div class="footer-col-title">Gestão de Banco de Dados e BI</div>
+          <span class="footer-link">Pós-Graduação em Data Analytics e Marketing</span>
+          <span class="footer-link">ESPM · Turma 61A1-2 · Noturno · 24 h</span>
+          <span class="footer-link">Prof. Deoclides Francisco de Souza Filho</span>
+          <p class="footer-copy">Conteúdo alinhado ao PEA atualizado em 30/03/2026.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">Navegação</div>
+          <a class="footer-link" href="#/">Início</a>
+          <a class="footer-link" href="#/plano">Plano de ensino (PEA)</a>
+          <a class="footer-link" href="#/avaliacao">Avaliação</a>
+          <a class="footer-link" href="#/recursos">Recursos</a>
+        </div>
+      </footer>
+
+    </div>
+  </main>
+
+</div>
+
+<!-- namespace + dados -->
+<script>var GBDBI = { data: {}, content: {} };</script>
+<script src="data/curso.js"></script>
+<script src="data/aulas.js"></script>
+<script src="data/atividades.js"></script>
+
+<!-- aplicação -->
+<script src="assets/js/theme.js"></script>
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/render.js"></script>
+<script src="assets/js/nav.js"></script>
+<script src="assets/js/router.js"></script>
+<script src="assets/js/app.js"></script>
+
+</body>
+</html>

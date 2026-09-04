@@ -1,0 +1,278 @@
+/* ============================================================
+   pages.css — primitivas do conteúdo das aulas e atividades
+   Regras por padrão de nome (-grid / -card / -tag / -title / -desc)
+   cobrem a maior parte dos blocos; ajustes específicos vêm depois.
+   ============================================================ */
+
+/* ────────────── TROCA DE TELAS (aulas) ────────────── */
+.page { display: none; }
+.page.active { display: block; animation: fadeUp .3s ease both; }
+
+/* ────────────── MENU DA AULA ────────────── */
+/* O cabeçalho herdado do material repete número, título e subtítulo que
+   a SPA já exibe acima das abas — some para não duplicar a informação. */
+#aula-content .m-header { display: none; }
+#aula-content .m-grid { margin-top: 0; }
+
+.m-header { padding: var(--space-6) 0 var(--space-5); }
+.m-eyebrow { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: 1.4px; text-transform: uppercase; color: var(--accent); }
+.m-title { margin-top: var(--space-4); font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 700; letter-spacing: -1px; line-height: 1.1; }
+.m-sub { margin-top: var(--space-4); font-size: var(--text-sm); color: var(--text-secondary); }
+.m-grid { display: grid; gap: var(--space-4); margin-top: var(--space-6); grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.mcard {
+  position: relative; cursor: pointer;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: var(--space-5);
+  transition: border-color .15s, transform .15s;
+}
+.mcard:hover { border-color: var(--accent); transform: translateY(-2px); }
+.mc-num { font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.4px; color: var(--accent); }
+.mc-h { margin-top: var(--space-3); font-family: var(--font-display); font-weight: 600; font-size: var(--text-base); padding-right: var(--space-5); }
+.mc-p { margin-top: var(--space-2); font-size: var(--text-sm); color: var(--text-secondary); }
+.mc-arrow { position: absolute; top: var(--space-5); right: var(--space-5); color: var(--text-secondary); }
+.mcard:hover .mc-arrow { color: var(--accent); }
+
+/* ────────────── CORPO DE UMA TELA ────────────── */
+.t-body { padding: var(--space-6) 0 0; }
+.t-title { font-family: var(--font-display); font-size: var(--text-xl); font-weight: 700; letter-spacing: -.5px; line-height: 1.15; margin-bottom: var(--space-6); }
+
+/* ────────────── OBJETIVOS ────────────── */
+.obj-card { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: var(--space-6); }
+.obj-eyebrow { font-size: 10px; font-weight: 600; letter-spacing: 1.6px; text-transform: uppercase; color: var(--accent); }
+.obj-list { margin-top: var(--space-5); display: flex; flex-direction: column; gap: var(--space-4); }
+.obj-item { display: flex; gap: var(--space-3); font-size: var(--text-sm); color: var(--text-secondary); }
+.obj-bullet { flex: none; width: 6px; height: 6px; margin-top: 9px; border-radius: 50%; background: var(--accent); }
+
+/* ────────────── DIAGRAMAS SVG ──────────────
+   Os SVGs herdados têm cores fixas claras: fundo claro fixo mantém
+   contraste tanto no tema escuro quanto no claro.                */
+.diagram {
+  margin: var(--space-6) 0; padding: var(--space-5);
+  background: var(--diagram-bg); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow-x: auto;
+}
+.diagram svg { width: 100%; height: auto; min-width: 320px; margin: 0 auto; }
+
+/* ────────────── KEY POINTS ────────────── */
+.kps { display: grid; gap: var(--space-4); margin: var(--space-6) 0; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.kp { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space-5); }
+.kp-tag { font-size: 10px; font-weight: 600; letter-spacing: 1.4px; text-transform: uppercase; color: var(--accent); }
+.kp .kp-text { margin-top: var(--space-3); font-size: var(--text-sm); color: var(--text-secondary); }
+
+/* ────────────── LINHAS IMAGEM + DESCRIÇÃO ────────────── */
+.fonte-rows { display: flex; flex-direction: column; gap: var(--space-5); }
+.fonte-row { display: flex; align-items: center; gap: var(--space-5); }
+.fonte-row img { flex: none; width: 220px; height: auto; border-radius: var(--radius-sm); border: 1px solid var(--border); }
+.fonte-desc { flex: 1; }
+
+/* ────────────── NAVEGAÇÃO ENTRE TELAS ────────────── */
+.pg-nav { display: flex; gap: var(--space-3); justify-content: space-between; margin: var(--space-8) 0 var(--space-6); padding-top: var(--space-5); border-top: 1px solid var(--border); }
+.pn-btn {
+  padding: var(--space-3) var(--space-5);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-size: var(--text-sm); color: var(--text-secondary);
+  transition: color .15s, border-color .15s;
+}
+.pn-btn:hover { color: var(--accent); border-color: var(--accent); }
+.pn-fwd { margin-left: auto; color: var(--accent); border-color: var(--accent); }
+.pn-fwd:hover { background: var(--accent); color: #fff; }
+
+/* ────────────── CÓDIGO SQL / JSON ────────────── */
+.sql-wrap, .sql-block, .sql-block-custom {
+  margin: var(--space-5) 0;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+}
+.sql-header { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--border); background: var(--surface-2); }
+.sql-label { font-size: 10px; letter-spacing: 1.3px; text-transform: uppercase; color: var(--text-secondary); }
+.copy-btn { margin-left: auto; font-size: 10px; letter-spacing: .8px; text-transform: uppercase; color: var(--accent); padding: 2px 8px; border: 1px solid var(--border); border-radius: 4px; }
+.copy-btn:hover { border-color: var(--accent); }
+
+/* Aula 5 · botão que revela a análise dos dashboards para o professor */
+.reveal-btn {
+  padding: 13px 36px; background: var(--accent); color: var(--bg);
+  border: none; border-radius: 8px; font-size: 13.5px; font-weight: 600;
+  cursor: pointer; font-family: inherit; letter-spacing: .3px;
+  transition: background .2s;
+}
+.reveal-btn:hover { background: var(--accent-hover); }
+.sql, .sql-block pre, .sql-wrap pre, pre.sql,
+.sql-block > code, .sql-block-custom > code {
+  display: block; padding: var(--space-4); overflow-x: auto;
+  font-family: var(--font-mono); font-size: var(--text-xs); line-height: 1.7;
+  color: var(--text-primary); white-space: pre; tab-size: 2;
+}
+/* tokens */
+.sql .k, .k { color: var(--accent); font-weight: 500; }
+.sql .s, .s { color: var(--ok); }
+.sql .n, .n { color: var(--warn); }
+.sql .f, .f { color: var(--accent-hover); }
+.sql .cm, .cm { color: var(--text-secondary); font-style: italic; }
+.sql .a, .sql .b, .sql .c { color: var(--text-primary); }
+.err { color: var(--danger); text-decoration: underline wavy var(--danger); }
+.ins { color: var(--ok); }
+.del { color: var(--danger); text-decoration: line-through; }
+
+/* ────────────── CALLOUTS ────────────── */
+.callout, .info-box, .challenge, .chall, .tip-comp, .quote-card, .ai-card, .menti-block, .disc {
+  margin: var(--space-5) 0; padding: var(--space-5);
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 3px solid var(--accent); border-radius: var(--radius);
+  font-size: var(--text-sm); color: var(--text-secondary);
+}
+.callout-tag, .challenge-tag, .quote-sub, .ai-card-tag, .menti-eyebrow, .an-tag, .use-label {
+  display: block; font-size: 10px; font-weight: 600; letter-spacing: 1.4px;
+  text-transform: uppercase; color: var(--accent); margin-bottom: var(--space-3);
+}
+.callout strong, .callout b, .info-box strong { color: var(--text-primary); }
+.callout-blue { border-left-color: var(--accent); }
+.callout-green { border-left-color: var(--ok); }
+.callout-green .callout-tag { color: var(--ok); }
+.callout-dark { background: var(--surface-2); }
+.quote-text { font-family: var(--font-display); font-size: var(--text-lg); line-height: 1.4; color: var(--text-primary); }
+.quote-author { margin-top: var(--space-3); font-size: var(--text-xs); color: var(--text-secondary); }
+.challenge-q { font-size: var(--text-base); color: var(--text-primary); }
+.challenge-check { margin-top: var(--space-3); color: var(--ok); }
+
+/* ────────────── PADRÕES GENÉRICOS ────────────── */
+[class$="-grid"], [class$="-grids"], [class$="-cards"], .kps, .steps4, .ov-concepts, .v-grid, .adv-list, .step-list, .ai-list, .ref-links {
+  display: grid; gap: var(--space-4); margin: var(--space-5) 0;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+.ov-concepts.ov-concepts-stack { grid-template-columns: 1fr; }
+.nf-grid { grid-template-columns: 1fr; }
+[class$="-card"]:not(.aula-card):not(.section-card):not(.kp-card):not(.peso-card):not(.recurso-card):not(.comp-card):not(.obj-card):not(.quote-card):not(.ai-card),
+.ov-concept, .v-card, .adv-item, .arch-card, .cmp-card, .nf-card, .disc-inner, .activity-card, .anomaly-card, .scd-card, .comp4-card, .step4-card, .a8-card, .a8-item, .a8-ia-card, .a8-analysis-card, .datafile-card, .nosql-type, .menti-option, .entrega-item, .compare-card, .acc-item {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: var(--space-5);
+}
+
+/* rótulo / eyebrow dos blocos */
+.ov-section-tag, .arch-tag, .adv-label, .v-letter, .nf-col-label, .df-tag, .a8-card-tag, .a8-ia-tag, .a8-analysis-tag, .cmp-head, .scd-head, .comp4-weight, .acc-col-tag, .nosql-type-tag, .disc-title, .result-label, .schema-tbl-name, .df-type, .menti-lb, .step-num, .step-num-custom, .a8-item-num, .step4-num, .comp4-icon, .v1, .v2, .v3, .v4, .v5 {
+  font-size: 10px; font-weight: 600; letter-spacing: 1.3px; text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* títulos dos blocos */
+.ov-concept > b, .arch-h, .v-name, .nf-htext, .a8-card-title, .a8-item-title, .step-title, .step-title-custom, .step4-h, .comp4-name, .nosql-type-name, .entrega-title, .activity-title, .vanity-h, .sql-h, .nosql-h, .disc-trigger, .acc-criterion, .al-title, .activity-link-title {
+  font-family: var(--font-display); font-weight: 600; font-size: var(--text-base);
+  color: var(--text-primary); line-height: 1.3;
+}
+
+/* textos de apoio */
+.arch-p, .v-desc, .nf-body, .a8-card-desc, .a8-item-desc, .a8-ia-text, .a8-analysis-text, .step-desc, .step-text, .step-text-custom, .step4-p, .step4-q, .comp4-desc, .comp4-aula, .nosql-type-desc, .nosql-type-vendor, .entrega-desc, .entrega-format, .activity-desc, .vanity-p, .acc-col-text, .acc-body, .acc-hint, .adv-body, .cmp-body, .scd-body, .disc-body, .an-text, .al-desc, .activity-link-desc, .anomaly-intro, .menti-scenario, .menti-question, .menti-footer, .df-detail, .ai-compare, .tip-table, .compare-body {
+  font-size: var(--text-sm); color: var(--text-secondary); margin-top: var(--space-2);
+}
+
+/* ────────────── TABELAS ────────────── */
+.tbl, .data-table, .anomaly-tbl, .nf-tbl, .schema-tbl, .result-tbl, .cmp-table {
+  margin: var(--space-4) 0; font-size: var(--text-xs);
+  border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden;
+}
+.tbl th, .tbl td, .data-table th, .data-table td, .anomaly-tbl th, .anomaly-tbl td,
+.nf-tbl th, .nf-tbl td, .schema-tbl th, .schema-tbl td, .result-tbl th, .result-tbl td {
+  padding: var(--space-2) var(--space-3); text-align: left;
+  border-bottom: 1px solid var(--border); border-right: 1px solid var(--border);
+  font-family: var(--font-mono);
+}
+.tbl th, .data-table th, .anomaly-tbl th, .nf-tbl th, .schema-tbl th, .result-tbl th {
+  background: var(--surface-2); color: var(--text-secondary);
+  font-size: 10px; letter-spacing: .8px; text-transform: uppercase; font-weight: 600;
+}
+.tbl td, .data-table td, .anomaly-tbl td, .nf-tbl td, .schema-tbl td, .result-tbl td { color: var(--text-secondary); }
+.tbl tr:last-child td, .data-table tr:last-child td { border-bottom: none; }
+.tbl th:last-child, .tbl td:last-child, .data-table th:last-child, .data-table td:last-child { border-right: none; }
+
+.data-table-wrap, .anomaly-table-wrap, .result-wrap, .schema-grid, .sql-block-wrap, .table-wrap { overflow-x: auto; }
+.bad-cell, .bad { color: var(--danger); }
+.good, .check-yes { color: var(--ok); }
+.highlight-del { color: var(--danger); }
+.highlight-alt { color: var(--warn); }
+
+/* ────────────── COMPARAÇÕES OLTP × OLAP ────────────── */
+.compare, .compare-grid, .cmp-grid, .ai-compare-grid { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin: var(--space-5) 0; }
+.compare-head, .cmp-head, .h-oltp, .h-olap { font-size: 10px; font-weight: 600; letter-spacing: 1.3px; text-transform: uppercase; }
+.oltp, .v-oltp, .h-oltp { color: var(--warn); }
+.olap, .v-olap, .h-olap, .dw { color: var(--accent); }
+
+/* ────────────── ACORDEÕES / DISCLOSURES ────────────── */
+.accordion { display: flex; flex-direction: column; gap: var(--space-3); margin: var(--space-5) 0; }
+.acc-trigger, .disc-trigger { display: flex; align-items: center; gap: var(--space-3); width: 100%; text-align: left; cursor: pointer; }
+.acc-icon, .disc-icon, .nosql-chevron { flex: none; color: var(--accent); transition: transform .2s; }
+.acc-item.open .acc-icon, .disc.open .disc-icon, .nosql-type.open .nosql-chevron { transform: rotate(90deg); }
+.acc-body, .disc-body, .nosql-type-body { display: none; margin-top: var(--space-4); }
+.acc-item.open .acc-body, .disc.open .disc-body, .nosql-type.open .nosql-type-body { display: block; }
+.acc-col { padding: var(--space-3) 0; border-top: 1px solid var(--border); }
+.acc-col:first-child { border-top: none; }
+
+/* ────────────── PASSOS / PIPELINE ────────────── */
+.step-row, .step, .step-custom, .a8-item { display: flex; gap: var(--space-4); align-items: flex-start; margin: var(--space-4) 0; }
+.step-num-circle, .step-num, .step-num-custom, .a8-item-num, .menti-opt-letter {
+  flex: none; display: grid; place-items: center; width: 30px; height: 30px;
+  border-radius: 50%; border: 1px solid var(--accent);
+  color: var(--accent); font-family: var(--font-mono); font-size: var(--text-xs);
+}
+.step-content, .a8-item-desc, .menti-opt-text { flex: 1; min-width: 0; }
+
+.pipeline { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin: var(--space-5) 0; }
+.pipe-box { flex: 1; min-width: 130px; padding: var(--space-4); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.pipe-box-label { font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--accent); }
+.pipe-box-title { margin-top: var(--space-2); font-size: var(--text-sm); color: var(--text-primary); }
+.pipe-arrow { flex: none; color: var(--text-secondary); }
+
+.step-indicator { display: inline-block; font-family: var(--font-mono); font-size: 10px; letter-spacing: 1.5px; color: var(--accent); margin-bottom: var(--space-3); }
+
+/* ────────────── BADGES ────────────── */
+.badge-fk, .badge-m, .badge-sk, .menti-badge, .activity-badge, .nf-badge, .an-icon, .tip-icon, .df-icon, .acc-icon-badge {
+  display: inline-block; padding: 2px var(--space-2); border-radius: 4px;
+  background: var(--accent-muted); color: var(--accent);
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: .5px;
+}
+.badge-m { background: var(--surface-2); color: var(--warn); }
+
+/* ────────────── LINKS EXTERNOS / DOWNLOADS ────────────── */
+.ext-link, .a8-download, .activity-link, .ref-btn, .al-icon, .datafile-card a {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  color: var(--accent); font-size: var(--text-sm);
+}
+.ext-link:hover, .a8-download:hover, .activity-link:hover, .ref-btn:hover { text-decoration: underline; }
+.a8-download {
+  padding: var(--space-3) var(--space-5); border: 1px solid var(--accent);
+  border-radius: var(--radius-sm); margin-top: var(--space-4); text-decoration: none;
+}
+.a8-download:hover { background: var(--accent); color: #fff; text-decoration: none; }
+.a8-download-tag { font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase; }
+
+/* ────────────── MENTIMETER / ENQUETES ────────────── */
+.menti-header { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+.menti-options { display: grid; gap: var(--space-3); margin-top: var(--space-4); }
+.menti-option { display: flex; gap: var(--space-3); align-items: flex-start; }
+.menti-cta { display: inline-block; margin-top: var(--space-4); color: var(--accent); font-size: var(--text-sm); }
+
+/* ────────────── ATIVIDADES (âncoras de seção) ────────────── */
+.activity-body [id], .page [id] { scroll-margin-top: 90px; }
+.activity-card { border-left: 3px solid var(--accent); }
+.activity-icon, .activity-link-icon, .al-icon { color: var(--accent); }
+.activity-link-arrow { margin-left: auto; color: var(--text-secondary); }
+
+/* ────────────── UTILITÁRIOS HERDADOS ────────────── */
+.flex { display: flex; gap: var(--space-3); flex-wrap: wrap; }
+.alt, .soft { color: var(--text-secondary); }
+.must { color: var(--danger); font-weight: 600; }
+.dep-underline { text-decoration: underline dotted var(--accent); }
+.vanity-row { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); margin: var(--space-4) 0; }
+.vanity-good { border-left: 3px solid var(--ok); }
+.vanity-bad { border-left: 3px solid var(--danger); }
+.vanity-sep { height: 1px; background: var(--border); margin: var(--space-4) 0; }
+.vanity-tag { font-size: 10px; letter-spacing: 1.3px; text-transform: uppercase; color: var(--text-secondary); }
+
+/* ────────────── MOBILE ────────────── */
+@media (max-width: 768px) {
+  .pg-nav { flex-direction: column; }
+  .pn-fwd { margin-left: 0; }
+  .pn-btn { width: 100%; text-align: center; }
+  .diagram { padding: var(--space-3); }
+  .fonte-row { flex-direction: column; align-items: flex-start; }
+  .fonte-row img { width: 100%; }
+  .m-title { font-size: var(--text-xl); }
+}
