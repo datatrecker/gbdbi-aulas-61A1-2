@@ -13,7 +13,7 @@ GBDBI.content["aula-02"] = `<!-- ═══ MENU ═══ -->
         <div class="mcard" data-show="p4"><div class="mc-num">04</div><div class="mc-h">Normalização: 1FN · 2FN · 3FN</div><p class="mc-p">As três formas normais e as anomalias que cada uma previne.</p><span class="mc-arrow">↗</span></div>
         <div class="mcard" data-show="p5"><div class="mc-num">05</div><div class="mc-h">Tipos de Chaves</div><p class="mc-p">PK, FK, Natural, Substituta, Composta, Candidata e Alternativa.</p><span class="mc-arrow">↗</span></div>
         <div class="mcard" data-show="p6"><div class="mc-num">06</div><div class="mc-h">Integridade Referencial</div><p class="mc-p">A FK deve sempre encontrar sua PK. Quando essa regra é quebrada.</p><span class="mc-arrow">↗</span></div>
-        <div class="mcard" data-show="p7"><div class="mc-num">07</div><div class="mc-h">Modelagem de Dados</div><p class="mc-p">Conceitual, Lógico e Físico: os três níveis de abstração do modelo.</p><span class="mc-arrow">↗</span></div>
+        <div class="mcard" data-show="p7"><div class="mc-num">07</div><div class="mc-h">Modelagem de Dados</div><p class="mc-p">Conceitual, Lógico e Físico: os três níveis de abstração do modelo. Exercícios práticos no Lucid.</p><span class="mc-arrow">↗</span></div>
       </div>
     </div>
 
@@ -43,6 +43,28 @@ GBDBI.content["aula-02"] = `<!-- ═══ MENU ═══ -->
     <div id="p1" class="page">
       <div class="t-body">
         <div class="t-title">A arquitetura<br><em>do caos.</em></div>
+
+        <div class="callout" style="margin-top:8px;margin-bottom:20px;">
+          <div class="callout-tag">Antes de Começar</div>
+          Em grupos, abram o catálogo desnormalizado da SoundByte e identifiquem as inconsistências escondidas nele. Vocês têm 5 minutos. Depois, o professor libera a senha para desbloquear a aba com as respostas.
+        </div>
+
+        <div class="datafile-grid" style="margin-bottom:20px;">
+          <div class="datafile-card">
+            <div class="df-header">
+              <div class="df-icon">📊</div>
+              <div>
+                <div class="df-filename">SoundByte_Catalogo_Desnormalizado.xlsx</div>
+                <span class="df-type xlsx">Excel · aba de respostas protegida por senha</span>
+              </div>
+            </div>
+            <div class="df-detail">Um único catálogo desnormalizado, com redundâncias e inconsistências propositais — o mesmo tipo de problema visto na tela de Normalização mais adiante.</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px;">
+          <a class="btn btn-primary" href="recursos/SoundByte_Catalogo_Desnormalizado.xlsx" download>&darr; SoundByte_Catalogo_Desnormalizado.xlsx</a>
+        </div>
 
         <div class="ov-section-tag" style="margin-top:8px;">Conceitos Trabalhados</div>
         <div class="ov-concepts ov-concepts-stack">
@@ -748,7 +770,111 @@ GBDBI.content["aula-02"] = `<!-- ═══ MENU ═══ -->
             <div class="kp-text">SQL, tipos de dados (INT, VARCHAR…), índices e otimizações para o BD específico.</div>
           </div>
         </div>
-        <div class="pg-nav">
+
+        <div class="callout callout-green" style="margin-top:28px;">
+          <div class="callout-tag">Modelando no Lucid</div>
+          Os exercícios abaixo são feitos no Lucid, integrado ao Canvas da disciplina. Siga o passo a passo do link para conectar as duas ferramentas antes de começar.
+        </div>
+        <div style="margin-bottom:28px;">
+          <a class="ext-link" href="https://help.lucid.co/hc/pt/articles/14559937492756-Integrar-a-Lucid-ao-Canvas" target="_blank" rel="noopener">&#8599; Integrar a Lucid ao Canvas</a>
+        </div>
+
+        <div class="ov-section-tag" style="margin-bottom:8px;">Exercícios — Modelagem de Dados com Lucid</div>
+        <p class="acc-hint">Clique em cada exercício para ver o cenário, as regras de negócio e a tarefa. Use a notação Crow's Foot.</p>
+
+        <div class="accordion">
+
+          <div class="acc-item">
+            <div class="acc-trigger">
+              <span class="acc-criterion">Exercício 1 — Catálogo de Filmes Animados</span>
+              <span class="acc-icon">+</span>
+            </div>
+            <div class="acc-body">
+              <div class="acc-col">
+                <div class="acc-col-tag olap">Cenário</div>
+                <div class="acc-col-text">Uma plataforma de streaming deseja organizar seu catálogo de filmes animados e contratou você para projetar o modelo de dados relacional. Para cada filme são registrados um ID, o título, o ano de lançamento e a duração em minutos. Cada filme é dirigido por um único diretor e produzido por um único estúdio — mas um diretor pode ter dirigido vários filmes, assim como um estúdio pode ter produzido vários filmes diferentes. Diretores e estúdios possuem, cada um, um ID e um nome.</div>
+              </div>
+              <div class="acc-col">
+                <div class="acc-col-tag oltp">Regras de Negócio</div>
+                <div class="acc-col-text">
+                  • Um filme está sempre associado a um único diretor e um único estúdio.<br>
+                  • Um diretor pode ter dirigido vários filmes, mas um filme tem apenas um diretor.<br>
+                  • Um estúdio pode ter produzido vários filmes, mas um filme pertence a apenas um estúdio.
+                </div>
+              </div>
+              <div class="acc-col">
+                <div class="acc-col-tag">Tarefa</div>
+                <div class="acc-col-text">
+                  1. Identifique as entidades do problema.<br>
+                  2. Modele os relacionamentos entre as entidades, indicando as cardinalidades mínimas e máximas.<br>
+                  3. Crie os modelos conceitual, lógico e físico, utilizando a notação Crow's Foot.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="acc-item">
+            <div class="acc-trigger">
+              <span class="acc-criterion">Exercício 2 — Sistema Acadêmico Simplificado</span>
+              <span class="acc-icon">+</span>
+            </div>
+            <div class="acc-body">
+              <div class="acc-col">
+                <div class="acc-col-tag olap">Cenário</div>
+                <div class="acc-col-text">Uma instituição de ensino contratou você para desenvolver o modelo conceitual de um sistema acadêmico para um curso oferecido por ela — organizando disciplinas, professores e estudantes, e os relacionamentos entre esses elementos.</div>
+              </div>
+              <div class="acc-col">
+                <div class="acc-col-tag oltp">Regras de Negócio</div>
+                <div class="acc-col-text">
+                  • O curso é composto por várias disciplinas. Cada disciplina tem um número de identificação, um nome, e é lecionada por apenas um professor.<br>
+                  • Cada professor possui um número de identificação e um nome. Um professor pode lecionar várias disciplinas.<br>
+                  • Cada estudante possui um número de identificação, um nome e uma turma. Um estudante pode se matricular em várias disciplinas, e uma disciplina pode ter vários estudantes matriculados. Cada matrícula deve registrar a data em que o estudante se matriculou na disciplina.
+                </div>
+              </div>
+              <div class="acc-col">
+                <div class="acc-col-tag">Tarefa</div>
+                <div class="acc-col-text">
+                  1. Identifique e desenhe todas as entidades envolvidas no sistema.<br>
+                  2. Defina corretamente os relacionamentos entre as entidades e suas cardinalidades.<br>
+                  3. Crie os modelos conceitual, lógico e físico utilizando a notação de Crow's Foot.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="acc-item">
+            <div class="acc-trigger">
+              <span class="acc-criterion">Exercício 3 — Sistema de Agendamento de Consultas em Clínica Médica</span>
+              <span class="acc-icon">+</span>
+            </div>
+            <div class="acc-body">
+              <div class="acc-col">
+                <div class="acc-col-tag olap">Cenário</div>
+                <div class="acc-col-text">Uma clínica médica está desenvolvendo um sistema para gerenciar suas consultas, médicos, pacientes e faturamento. O corpo clínico é composto por diversos médicos, cada um podendo realizar várias consultas ao longo do tempo — ou nenhuma, em determinado momento. As consultas são marcadas com data, hora, duração e motivo, sempre com exatamente um médico e um paciente. Os pacientes são identificados por código, nome, sobrenome, endereço, cidade e estado, e podem agendar uma ou mais consultas. Cada consulta resulta na emissão de uma única fatura, identificada por número, valor, data de envio e status.</div>
+              </div>
+              <div class="acc-col">
+                <div class="acc-col-tag oltp">Regras de Negócio</div>
+                <div class="acc-col-text">
+                  • <strong>Médico</strong> — identificado por código, nome e sobrenome. Pode estar associado a muitas consultas, ou a nenhuma.<br>
+                  • <strong>Paciente</strong> — identificado por código, nome, sobrenome, endereço, cidade e estado. Pode ter várias consultas agendadas; cada consulta está associada a exatamente um paciente.<br>
+                  • <strong>Consulta</strong> — identificada por código, data, hora, duração e motivo. Associada a exatamente um médico e um paciente.<br>
+                  • <strong>Fatura</strong> — identificada por número, valor, data de envio e status. Associada a uma única consulta; cada consulta gera exatamente uma fatura.
+                </div>
+              </div>
+              <div class="acc-col">
+                <div class="acc-col-tag">Tarefa</div>
+                <div class="acc-col-text">
+                  1. Identifique as entidades envolvidas no sistema.<br>
+                  2. Defina os relacionamentos entre as entidades, com suas respectivas cardinalidades.<br>
+                  3. Crie os modelos conceitual, lógico e físico utilizando a notação de Crow's Foot.
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="pg-nav" style="margin-top:32px;">
           <button class="pn-btn" data-show="p6">← Integridade</button>
           <button class="pn-btn pn-fwd" data-show="menu">Início →</button>
         </div>

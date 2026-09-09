@@ -14,6 +14,8 @@ GBDBI.content["aula-03"] = `<!-- ═══ MENU ═══ -->
         <div class="mcard" data-show="p4"><div class="mc-num">05</div><div class="mc-h">JOIN — Cruzando Tabelas</div><p class="mc-p">INNER, LEFT, RIGHT e FULL OUTER JOIN: cruze tabelas pela chave e entenda o que cada tipo retorna.</p><span class="mc-arrow">&#8599;</span></div>
         <div class="mcard" data-show="p5"><div class="mc-num">06</div><div class="mc-h">GROUP BY e Agrega&#231;&#245;es</div><p class="mc-p">Agrupe para calcular totais, m&#233;dias e contagens — a SQL equivalente da tabela din&#226;mica.</p><span class="mc-arrow">&#8599;</span></div>
         <div class="mcard" data-show="p6"><div class="mc-num">07</div><div class="mc-h">O que a IA pode e n&#227;o pode fazer</div><p class="mc-p">A IA gera c&#243;digo correto sintaticamente. Quem valida se a resposta faz sentido de neg&#243;cio ainda &#233; o humano.</p><span class="mc-arrow">&#8599;</span></div>
+        <div class="mcard" data-show="p7"><div class="mc-num">08</div><div class="mc-h">Links e Ferramentas</div><p class="mc-p">Tutoriais de sintaxe SQL, tipos de dados, ambiente online e cria&#231;&#227;o de ERDs.</p><span class="mc-arrow">&#8599;</span></div>
+        <div class="mcard" data-show="p8"><div class="mc-num">09</div><div class="mc-h">Exerc&#237;cio &#8212; Banco de Dados Netflix</div><p class="mc-p">Do diagrama &#224; consulta: perguntas anal&#237;ticas com aux&#237;lio da IA, respondidas em SQL.</p><span class="mc-arrow">&#8599;</span></div>
       </div>
     </div>
 
@@ -725,6 +727,118 @@ cadastrado. Ordene do maior para o menor.</span></pre>
 
         <div class="pg-nav">
           <button class="pn-btn" data-show="p5">&#8592; GROUP BY</button>
+          <button class="pn-btn pn-fwd" data-show="p7">Links e Ferramentas &#8594;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ P7 — LINKS E FERRAMENTAS ═══ -->
+    <div id="p7" class="page">
+      <div class="t-body">
+        <div class="t-title">As ferramentas<br><em>do dia a dia.</em></div>
+        <p class="acc-hint">Tutoriais e ferramentas para praticar SQL e modelagem fora da sala de aula.</p>
+
+        <div class="ov-section-tag" style="margin-top:20px;">Sintaxe SQL</div>
+        <div class="ref-links">
+          <a href="https://www.w3schools.com/sql/default.asp" target="_blank" class="ref-btn"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> W3Schools &#8212; SQL Tutorial</a>
+        </div>
+
+        <div class="ov-section-tag" style="margin-top:24px;">Tipos de Dados SQL</div>
+        <div class="ref-links">
+          <a href="https://www.w3schools.com/sql/sql_datatypes.asp" target="_blank" class="ref-btn"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> W3Schools &#8212; Tipos de Dados</a>
+          <a href="https://www.postgresql.org/docs/current/datatype.html" target="_blank" class="ref-btn"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> PostgreSQL &#8212; Data Types</a>
+        </div>
+
+        <div class="ov-section-tag" style="margin-top:24px;">Criar Banco Relacional (OLTP)</div>
+        <div class="ref-links">
+          <a href="https://sqliteonline.com/" target="_blank" class="ref-btn"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> SQLite Online</a>
+          <a href="https://www.sqlite.org/about.html" target="_blank" class="ref-btn"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> SQLite &#8212; Sobre</a>
+        </div>
+
+        <div class="ov-section-tag" style="margin-top:24px;">Criar ERDs a partir do SQL Schema</div>
+        <div class="ref-links">
+          <a href="https://dbdiagram.io/d" target="_blank" class="ref-btn"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> dbdiagram.io</a>
+        </div>
+
+        <div class="pg-nav" style="margin-top:32px;">
+          <button class="pn-btn" data-show="p6">&#8592; IA e SQL</button>
+          <button class="pn-btn pn-fwd" data-show="p8">Exerc&#237;cio: Netflix &#8594;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ P8 — EXERCÍCIO: BANCO DE DADOS NETFLIX ═══ -->
+    <div id="p8" class="page">
+      <div class="t-body">
+        <div class="t-title">Da IA ao<br><em>insight.</em></div>
+
+        <div class="callout" style="margin-bottom:20px;">
+          <div class="callout-tag">Exerc&#237;cio 1 &#8212; Banco de Dados Netflix</div>
+          Com a ajuda da IA, formule perguntas anal&#237;ticas sobre um banco de dados real e responda com SQL &#8212; do diagrama &#224; consulta.
+        </div>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px;">
+          <a class="btn btn-primary" href="recursos/netflixdb-postgres.sql" download>&darr; netflixdb-postgres.sql</a>
+          <a class="btn btn-outline" href="https://sqliteonline.com/" target="_blank" rel="noopener">SQLite Online &#8599;</a>
+          <a class="btn btn-outline" href="https://dbdiagram.io/home" target="_blank" rel="noopener">dbdiagram &#8599;</a>
+        </div>
+
+        <div class="step-row">
+          <div class="step-num-circle">1</div>
+          <div class="step-content"><div class="step-title">Acesse o SQLite Online</div>
+          <div class="step-desc">Abra o navegador e acesse o ambiente de consulta em sqliteonline.com. Nenhuma instala&#231;&#227;o necess&#225;ria.</div></div>
+        </div>
+        <div class="step-row">
+          <div class="step-num-circle">2</div>
+          <div class="step-content"><div class="step-title">Carregue o banco de dados Netflix</div>
+          <div class="step-desc">Importe o arquivo <code>netflixdb-postgres.sql</code>. Selecione o motor <strong>PGLite</strong> antes de carregar.</div></div>
+        </div>
+        <div class="step-row">
+          <div class="step-num-circle">3</div>
+          <div class="step-content"><div class="step-title">Crie perguntas anal&#237;ticas com aux&#237;lio da IA</div>
+          <div class="step-desc">Crie pelo menos <strong>3 perguntas anal&#237;ticas</strong> focadas na tomada de decis&#227;o sobre este banco de dados, e diga por que cada uma &#233; relevante. Responda cada uma com SQL.</div></div>
+        </div>
+        <div class="step-row">
+          <div class="step-num-circle">4</div>
+          <div class="step-content"><div class="step-title">Rode o script e salve os arquivos</div>
+          <div class="step-desc">Execute o SQL gerado no SQLite Online e salve dois arquivos: um <code>.sql</code> com as consultas de todas as perguntas, e um <code>.xlsx</code> com todas as respostas.</div></div>
+        </div>
+
+        <div class="ov-section-tag" style="margin:28px 0 12px;">Caminho sugerido &#8212; ERD com a IA</div>
+        <div class="accordion">
+          <div class="acc-item">
+            <div class="acc-trigger">
+              <span class="acc-criterion">Como gerar o script a partir de um diagrama</span>
+              <span class="acc-icon">+</span>
+            </div>
+            <div class="acc-body">
+              <div class="acc-col">
+                <div class="acc-col-tag olap">Passo 1 &#8212; Diagrama</div>
+                <div class="acc-col-text">Crie um diagrama ERD do banco de dados usando o <a class="ext-link" href="https://dbdiagram.io/home" target="_blank" rel="noopener">dbdiagram</a> e salve o diagrama como figura PNG.</div>
+              </div>
+              <div class="acc-col">
+                <div class="acc-col-tag oltp">Passo 2 &#8212; Prompt</div>
+                <div class="acc-col-text">Carregue o diagrama na IA e use o prompt abaixo.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sql-block" style="margin-top:16px;">
+<pre><span class="cm">Eu tenho o banco de dados PostgreSQL da figura anexada.
+Proponha 3 perguntas anal&#237;ticas e crie um script com
+consultas SQL para cada pergunta em um &#250;nico arquivo,
+contendo as perguntas e seus insights nos coment&#225;rios
+antes de cada consulta.</span></pre>
+        </div>
+
+        <div class="kps">
+          <div class="kp"><div class="kp-tag">Entrega 1</div><div class="kp-text">Arquivo <code>.sql</code> contendo as consultas para todas as perguntas.</div></div>
+          <div class="kp"><div class="kp-tag" style="color:var(--danger)">Entrega 2</div><div class="kp-text">Arquivo <code>.xlsx</code> contendo todas as respostas.</div></div>
+        </div>
+
+        <div class="pg-nav">
+          <button class="pn-btn" data-show="p7">&#8592; Links e Ferramentas</button>
           <button class="pn-btn pn-fwd" data-show="menu">In&#237;cio &#8594;</button>
         </div>
       </div>

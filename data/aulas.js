@@ -100,7 +100,9 @@ GBDBI.data.aulas = [
       { id: 'p_where', num: '04', text: 'WHERE' },
       { id: 'p4', num: '05', text: 'JOIN' },
       { id: 'p5', num: '06', text: 'GROUP BY' },
-      { id: 'p6', num: '07', text: 'IA e SQL' }
+      { id: 'p6', num: '07', text: 'IA e SQL' },
+      { id: 'p7', num: '08', text: 'Links e Ferramentas' },
+      { id: 'p8', num: '09', text: 'Exercício: Netflix' }
     ]
   },
 
